@@ -1,5 +1,4 @@
-# HỆ THỐNG QUẢN LÝ NGÂN HÀNG MÁU VÀ HIẾN MÁU TÌNH NGUYỆN
-## BLOOD BANK AND VOLUNTARY BLOOD DONATION MANAGEMENT SYSTEM
+# HỆ THỐNG QUẢN LÝ NGÂN HÀNG MÁU VÀ HIẾN MÁU TÌNH NGUYỆN CỦA MỘT BỆNH VIỆN
 
 ### Đề tài chuyên ngành
 **Ngành:** Công nghệ thông tin  
