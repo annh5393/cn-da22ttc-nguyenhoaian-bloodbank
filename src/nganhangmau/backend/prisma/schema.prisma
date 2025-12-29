@@ -1,0 +1,108 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model khomau {
+  makho          String     @id(map: "pk_khomau") @unique(map: "khomau_pk") @db.VarChar(10)
+  tenvitri       String?    @db.VarChar(255)
+  nhietdobaoquan String?    @db.VarChar(50)
+  phutrach       phutrach[]
+  tuimau         tuimau[]
+}
+
+model nguoihienmau {
+  manguoihien    String         @id(map: "pk_nguoihienmau") @unique(map: "nguoihienmau_pk") @db.VarChar(10)
+  hotennguoihien String?        @db.VarChar(50)
+  ngaysinh       DateTime?      @db.Date
+  gioitinh       String?        @db.VarChar(5)
+  email          String?        @db.VarChar(50)
+  diachi         String?        @db.VarChar(100)
+  sodienthoai    String?        @db.VarChar(10)
+  nhommau        String?        @db.VarChar(10)
+  rhesus         String?        @db.VarChar(5)
+  ngaytao        DateTime?      @db.Date
+  trangthai      String?        @db.VarChar(20)
+  phieuhienmau   phieuhienmau[]
+  phieukham      phieukham[]
+  tuimau         tuimau[]
+}
+
+model nhanvienyte {
+  manvyt         String         @id(map: "pk_nhanvienyte") @unique(map: "nhanvienyte_pk") @db.VarChar(10)
+  hotennvyt      String?        @db.VarChar(50)
+  ngaysinhNV     DateTime?      @map("ngaysinh") @db.Date
+  gioitinhNV     String?        @map("gioitinh") @db.VarChar(5)
+  emailnv        String?        @unique @db.VarChar(50)
+  passwordNV     String?        @map("password") @db.VarChar(255)
+  diachinv       String?        @map("diachi") @db.VarChar(100)
+  sodienthoainv  String?        @map("sodienthoai") @db.VarChar(10)
+  vaitro         String?        @db.VarChar(20)
+  ngaytao        DateTime?      @db.Date
+  trangthai      String?        @db.VarChar(20)
+  phieuhienmau   phieuhienmau[]
+  phieukham      phieukham[]
+  phutrach       phutrach[]
+}
+
+model phieuhienmau {
+  maphieuhien      String       @id(map: "pk_phieuhienmau") @unique(map: "phieuhienmau_pk") @db.VarChar(10)
+  manvyt           String       @db.VarChar(10)
+  manguoihien      String       @db.VarChar(10)
+  ngaytaophieuhien DateTime?    @db.Date
+  luongmauhien     Decimal?     @db.Decimal
+  trangthai        String?      @db.VarChar(20)
+  hienlan          String?      @db.VarChar(10)
+  nguoihienmau     nguoihienmau @relation(fields: [manguoihien], references: [manguoihien], onUpdate: Restrict, map: "fk_phieuhie_dothien_nguoihie")
+  nhanvienyte      nhanvienyte  @relation(fields: [manvyt], references: [manvyt], onUpdate: Restrict, map: "fk_phieuhie_lap_nhanvien")
+
+  @@index([manguoihien], map: "dothien_fk")
+  @@index([manvyt], map: "lap_fk")
+}
+
+model phieukham {
+  maphieukham      String       @id(map: "pk_phieukham") @unique(map: "phieukham_pk") @db.VarChar(10)
+  manguoihien      String       @db.VarChar(10)
+  manvyt           String       @db.VarChar(10)
+  ngaytaophieukham DateTime?    @db.Date
+  ghichu           String?      @db.VarChar(50)
+  ngaykham         DateTime?    @db.Date
+  ketquasangloc    String?      @db.VarChar(50)
+  nhanvienyte      nhanvienyte  @relation(fields: [manvyt], references: [manvyt], onUpdate: Restrict, map: "fk_phieukham_duoctao_nhanvien")
+  nguoihienmau     nguoihienmau @relation(fields: [manguoihien], references: [manguoihien], onUpdate: Restrict, map: "fk_phieukham_thuoc_nguoihien")
+
+  @@index([manvyt], map: "duoctao_fk")
+  @@index([manguoihien], map: "thuoc_fk")
+}
+
+model phutrach {
+  manvyt       String      @db.VarChar(10)
+  makho        String      @db.VarChar(10)
+  ngayphutrach DateTime?   @db.Date
+  khomau       khomau      @relation(fields: [makho], references: [makho], onUpdate: Restrict, map: "fk_phutrach_phutrach2_khomau")
+  nhanvienyte  nhanvienyte @relation(fields: [manvyt], references: [manvyt], onUpdate: Restrict, map: "fk_phutrach_phutrach_nhanvien")
+
+  @@id([manvyt, makho], map: "pk_phutrach")
+  @@unique([manvyt, makho], map: "phutrach_pk")
+  @@index([makho], map: "phutrach2_fk")
+  @@index([manvyt], map: "phutrach_fk")
+}
+
+model tuimau {
+  matuimau     String       @id(map: "pk_tuimau") @unique(map: "tuimau_pk") @db.VarChar(10)
+  makho        String       @db.VarChar(10)
+  manguoihien  String       @db.VarChar(10)
+  thetich      Decimal?     @db.Decimal
+  ngaynhapkho  DateTime?    @db.Date
+  hansudung    DateTime?    @db.Date
+  trangthai    String?      @db.VarChar(50)
+  khomau       khomau       @relation(fields: [makho], references: [makho], onUpdate: Restrict, map: "fk_tuimau_quanly_khomau")
+  nguoihienmau nguoihienmau @relation(fields: [manguoihien], references: [manguoihien], onUpdate: Restrict, map: "fk_tuimau_thamgia_nguoihie")
+
+  @@index([makho], map: "quanly_fk")
+  @@index([manguoihien], map: "thamgia_fk")
+}
